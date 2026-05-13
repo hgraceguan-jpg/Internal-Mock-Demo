@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Internal Mock Training Evaluation Form</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #f3f2f1;
+      min-height: 100vh;
+      padding: 32px 16px 60px;
+      color: #201f1e;
+    }
+
+    .form-container {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    /* ── Header card ── */
+    .header-card {
+      background: #fff;
+      border-radius: 4px;
+      border-top: 8px solid #e87722;
+      box-shadow: 0 2px 6px rgba(0,0,0,.1);
+      padding: 28px 32px 24px;
+      margin-bottom: 16px;
+    }
+
+    .header-card h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #201f1e;
+      margin-bottom: 6px;
+    }
+
+    .header-card .subtitle {
+      font-size: 13px;
+      color: #605e5c;
+      margin-bottom: 4px;
+    }
+
+    .required-note {
+      font-size: 13px;
+      color: #605e5c;
+      margin-top: 10px;
+    }
+
+    .required-note span { color: #c4314b; }
+
+    /* ── Generic card ── */
+    .card {
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 0 2px 6px rgba(0,0,0,.1);
+      padding: 24px 32px;
+      margin-bottom: 16px;
+    }
+
+    .card.active {
+      border-left: 4px solid #e87722;
+    }
+
+    .section-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: #201f1e;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #edebe9;
+    }
+
+    /* ── Question label ── */
+    .question-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #201f1e;
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+
+    .question-label .req { color: #c4314b; margin-left: 3px; }
+
+    /* ── Text inputs ── */
+    .form-group { margin-bottom: 20px; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 560px) { .form-grid { grid-template-columns: 1fr; } }
+
+    input[type="text"],
+    input[type="date"],
+    textarea {
+      width: 100%;
+      border: none;
+      border-bottom: 2px solid #c8c6c4;
+      padding: 6px 2px;
+      font-size: 14px;
+      font-family: inherit;
+      color: #201f1e;
+      background: transparent;
+      outline: none;
+      transition: border-color .2s;
+    }
+
+    input[type="text"]:focus,
+    input[type="date"]:focus,
+    textarea:focus {
+      border-bottom-color: #e87722;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+      padding-top: 4px;
+    }
+
+    /* ── Rating scale legend ── */
+    .scale-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .scale-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #f3f2f1;
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-size: 12px;
+    }
+
+    .scale-chip .num {
+      font-weight: 700;
+      color: #e87722;
+      min-width: 32px;
+    }
+
+    /* ── Competency table ── */
+    .competency-block { margin-bottom: 28px; }
+
+    .competency-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: #e87722;
+      margin-bottom: 6px;
+    }
+
+    .competency-weight {
+      font-size: 12px;
+      color: #605e5c;
+      font-weight: 500;
+      margin-bottom: 14px;
+    }
+
+    .particular-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #edebe9;
+    }
+
+    .particular-row:last-child { border-bottom: none; }
+
+    .particular-text {
+      font-size: 13.5px;
+      color: #201f1e;
+      line-height: 1.55;
+    }
+
+    .particular-num {
+      font-weight: 700;
+      color: #605e5c;
+      margin-right: 6px;
+    }
+
+    /* ── Radio star rating ── */
+    .rating-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      min-width: 160px;
+    }
+
+    .rating-options {
+      display: flex;
+      gap: 6px;
+    }
+
+    .rating-options label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      gap: 3px;
+    }
+
+    .rating-options label span {
+      font-size: 11px;
+      font-weight: 600;
+      color: #605e5c;
+    }
+
+    .rating-options input[type="radio"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 26px;
+      height: 26px;
+      border: 2px solid #c8c6c4;
+      border-radius: 50%;
+      cursor: pointer;
+      position: relative;
+      transition: border-color .15s, background .15s;
+    }
+
+    .rating-options input[type="radio"]:checked {
+      border-color: #e87722;
+      background: #e87722;
+    }
+
+    .rating-options input[type="radio"]:checked::after {
+      content: '';
+      display: block;
+      width: 10px;
+      height: 10px;
+      background: #fff;
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .rating-options input[type="radio"]:hover:not(:checked) {
+      border-color: #e87722;
+    }
+
+    /* ── Score display ── */
+    .score-display {
+      background: #fff8f2;
+      border: 1px solid #e87722;
+      border-radius: 6px;
+      padding: 14px 20px;
+      margin-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .score-item {
+      text-align: center;
+    }
+
+    .score-item .score-val {
+      font-size: 22px;
+      font-weight: 700;
+      color: #e87722;
+    }
+
+    .score-item .score-lbl {
+      font-size: 11px;
+      color: #605e5c;
+      margin-top: 2px;
+    }
+
+    /* ── Total score card ── */
+    .total-card {
+      background: linear-gradient(135deg, #e87722 0%, #cf6410 100%);
+      color: #fff;
+      border-radius: 6px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+      box-shadow: 0 4px 12px rgba(232,119,34,.3);
+    }
+
+    .total-card .total-label {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .total-card .total-val {
+      font-size: 36px;
+      font-weight: 700;
+    }
+
+    .total-card .rating-band {
+      font-size: 14px;
+      opacity: .9;
+    }
+
+    /* ── Open-ended ── */
+    .open-ended { margin-bottom: 20px; }
+
+    /* ── Signature area ── */
+    .sig-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 560px) { .sig-grid { grid-template-columns: 1fr; } }
+
+    .sig-box { }
+    .sig-box label { font-size: 12px; color: #605e5c; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
+    .sig-line {
+      border-bottom: 2px solid #c8c6c4;
+      margin-top: 40px;
+      margin-bottom: 4px;
+    }
+    .sig-name-input {
+      width: 100%;
+      border: none;
+      border-bottom: 1px solid #edebe9;
+      font-size: 13px;
+      font-family: inherit;
+      color: #201f1e;
+      background: transparent;
+      outline: none;
+      padding: 4px 2px;
+    }
+
+    /* ── Button row ── */
+    .btn-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 24px auto 0;
+      flex-wrap: wrap;
+    }
+
+    /* ── Submit button ── */
+    .btn-submit {
+      background: #e87722;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 12px 40px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background .2s, box-shadow .2s;
+      box-shadow: 0 2px 6px rgba(232,119,34,.25);
+    }
+
+    .btn-submit:hover { background: #cf6410; box-shadow: 0 4px 12px rgba(232,119,34,.35); }
+    .btn-submit:active { background: #b85510; }
+
+    /* ── Save PDF button ── */
+    .btn-pdf {
+      background: #fff;
+      color: #e87722;
+      border: 2px solid #e87722;
+      border-radius: 4px;
+      padding: 12px 28px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background .2s, color .2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-pdf:hover { background: #fef0e4; }
+    .btn-pdf:active { background: #fddfc8; }
+
+    /* ── Print / PDF styles ── */
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+        font-size: 12px;
+      }
+
+      .btn-row,
+      .btn-submit,
+      .btn-pdf,
+      #success-screen { display: none !important; }
+
+      .form-container { max-width: 100%; }
+
+      .header-card,
+      .card {
+        box-shadow: none;
+        border: 1px solid #d0d0d0;
+        margin-bottom: 10px;
+        padding: 14px 18px;
+        page-break-inside: avoid;
+      }
+
+      .header-card { border-top: 6px solid #e87722; }
+      .card.active { border-left: 3px solid #e87722; }
+
+      .total-card {
+        background: #e87722 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        color-adjust: exact;
+        page-break-inside: avoid;
+      }
+
+      .score-display {
+        background: #fff8f2 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      /* Show selected radio value as text box */
+      .rating-options { display: flex; gap: 4px; }
+
+      .rating-options input[type="radio"] {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .rating-options input[type="radio"]:checked {
+        background: #e87722 !important;
+        border-color: #e87722 !important;
+      }
+
+      input[type="text"],
+      input[type="date"],
+      textarea,
+      .sig-name-input {
+        border-bottom: 1px solid #999;
+      }
+
+      .sig-line { margin-top: 24px; }
+
+      .competency-block { page-break-inside: avoid; }
+    }
+
+    /* ── Success screen ── */
+    #success-screen {
+      display: none;
+      text-align: center;
+      padding: 60px 24px;
+    }
+
+    #success-screen .checkmark {
+      width: 70px;
+      height: 70px;
+      background: #107c10;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 32px;
+      color: #fff;
+    }
+
+    #success-screen h2 { font-size: 22px; color: #201f1e; margin-bottom: 10px; }
+    #success-screen p  { color: #605e5c; font-size: 14px; }
+
+    /* ── Utility ── */
+    .helper-text { font-size: 12px; color: #605e5c; margin-top: 4px; }
+    hr.divider { border: none; border-top: 1px solid #edebe9; margin: 20px 0; }
+  </style>
+</head>
+<body>
+
+<div class="form-container" id="form-wrap">
+
+  <!-- ══ HEADER ══ -->
+  <div class="header-card">
+    <h1>Internal Mock Training Evaluation Form</h1>
+    <p class="subtitle">Infosoft Consulting Corporation — Training and Solutions Department</p>
+    <p class="required-note">Fields marked with <span>*</span> are required.</p>
+  </div>
+
+  <form id="evalForm" novalidate>
+
+    <!-- ══ SECTION 1: RESPONDENT INFORMATION ══ -->
+    <div class="card active">
+      <div class="section-title">Respondent Information</div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <div class="question-label">Employee Name <span class="req">*</span></div>
+          <input type="text" id="empName" placeholder="e.g. Camille Negrosa" required />
+        </div>
+        <div class="form-group">
+          <div class="question-label">Position <span class="req">*</span></div>
+          <input type="text" id="position" placeholder="e.g. Business Application Associate" required />
+        </div>
+        <div class="form-group">
+          <div class="question-label">Business Unit <span class="req">*</span></div>
+          <input type="text" id="bizUnit" placeholder="e.g. Luzon Manufacturing and Agrid" required />
+        </div>
+        <div class="form-group">
+          <div class="question-label">Product <span class="req">*</span></div>
+          <input type="text" id="product" placeholder="e.g. Acumatica" required />
+        </div>
+        <div class="form-group">
+          <div class="question-label">Module <span class="req">*</span></div>
+          <input type="text" id="module" placeholder="e.g. Request to Disbursement" required />
+        </div>
+        <div class="form-group">
+          <div class="question-label">Date of Demo <span class="req">*</span></div>
+          <input type="date" id="demoDate" required />
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SECTION 2: RATING SCALE ══ -->
+    <div class="card">
+      <div class="section-title">Part II.A — Competency Evaluation · Rating Scale</div>
+      <p style="font-size:13px;color:#605e5c;margin-bottom:14px;">
+        Rate each particular using the scale below. <strong>1</strong> is the lowest, <strong>5</strong> is the highest.
+      </p>
+      <div class="scale-legend">
+        <div class="scale-chip"><span class="num">5</span> Excellent</div>
+        <div class="scale-chip"><span class="num">4–4.9</span> Exceeds Expectation</div>
+        <div class="scale-chip"><span class="num">3–3.9</span> Achieved Expectation</div>
+        <div class="scale-chip"><span class="num">2–2.9</span> Needs Improvement</div>
+        <div class="scale-chip"><span class="num">0–1.9</span> Poor</div>
+      </div>
+    </div>
+
+    <!-- ══ SECTION 3: COMPETENCY EVALUATION ══ -->
+    <div class="card active">
+      <div class="section-title">Competency Evaluation</div>
+
+      <!-- ── Competency 1: System and Process Flows ── -->
+      <div class="competency-block">
+        <div class="competency-name">System and Process Flows</div>
+        <div class="competency-weight">Weight: 50% of Total Score</div>
+
+        <div class="particular-row">
+          <div class="particular-text">
+            <span class="particular-num">1.</span>
+            The trainer has sufficient knowledge of the software's capabilities and limitations, and presented it efficiently, with minimal to no errors.
+          </div>
+          <div class="rating-group">
+            <div class="rating-options" id="spf1-opts">
+              <label><input type="radio" name="spf1" value="1" required /><span>1</span></label>
+              <label><input type="radio" name="spf1" value="2" /><span>2</span></label>
+              <label><input type="radio" name="spf1" value="3" /><span>3</span></label>
+              <label><input type="radio" name="spf1" value="4" /><span>4</span></label>
+              <label><input type="radio" name="spf1" value="5" /><span>5</span></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="particular-row">
+          <div class="particular-text">
+            <span class="particular-num">2.</span>
+            The trainer was able to answer/handle concerns/scenarios and relating it to system functionalities within industry standards/practices.
+          </div>
+          <div class="rating-group">
+            <div class="rating-options">
+              <label><input type="radio" name="spf2" value="1" required /><span>1</span></label>
+              <label><input type="radio" name="spf2" value="2" /><span>2</span></label>
+              <label><input type="radio" name="spf2" value="3" /><span>3</span></label>
+              <label><input type="radio" name="spf2" value="4" /><span>4</span></label>
+              <label><input type="radio" name="spf2" value="5" /><span>5</span></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="particular-row">
+          <div class="particular-text">
+            <span class="particular-num">3.</span>
+            The trainer was able to present the system functionalities and provide business value adding processes/controls.
+          </div>
+          <div class="rating-group">
+            <div class="rating-options">
+              <label><input type="radio" name="spf3" value="1" required /><span>1</span></label>
+              <label><input type="radio" name="spf3" value="2" /><span>2</span></label>
+              <label><input type="radio" name="spf3" value="3" /><span>3</span></label>
+              <label><input type="radio" name="spf3" value="4" /><span>4</span></label>
+              <label><input type="radio" name="spf3" value="5" /><span>5</span></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="score-display" id="score-spf">
+          <div class="score-item">
+            <div class="score-val" id="spf-avg">—</div>
+            <div class="score-lbl">Total Rating<br>(avg of 3)</div>
+          </div>
+          <div class="score-item">
+            <div class="score-val" id="spf-actual">—</div>
+            <div class="score-lbl">Actual Rating<br>(× 50%)</div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- ── Competency 2: Presentation ── -->
+      <div class="competency-block">
+        <div class="competency-name">Presentation</div>
+        <div class="competency-weight">Weight: 30% of Total Score</div>
+
+        <div class="particular-row">
+          <div class="particular-text">
+            <span class="particular-num">1.</span>
+            The overall presentation was organized and easy to follow.
+          </div>
+          <div class="rating-group">
+            <div class="rating-options">
+              <label><input type="radio" name="pres1" value="1" required /><span>1</span></label>
+              <label><input type="radio" name="pres1" value="2" /><span>2</span></label>
+              <label><input type="radio" name="pres1" value="3" /><span>3</span></label>
+              <label><input type="radio" name="pres1" value="4" /><span>4</span></label>
+              <label><input type="radio" name="pres1" value="5" /><span>5</span></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="particular-row">
+          <div class="particular-text">
+            <span class="particular-num">2.</span>
+            The quality of instruction (visual and verbal) was clear, dynamic, and promotes sufficient knowledge transfer.
+          </div>
+          <div class="rating-group">
+            <div class="rating-options">
+              <label><input type="radio" name="pres2" value="1" required /><span>1</span></label>
+              <label><input type="radio" name="pres2" value="2" /><span>2</span></label>
+              <label><input type="radio" name="pres2" value="3" /><span>3</span></label>
+              <label><input type="radio" name="pres2" value="4" /><span>4</span></label>
+              <label><input type="radio" name="pres2" value="5" /><span>5</span></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="particular-row">
+          <div class="particular-text">
+            <span class="particular-num">3.</span>
+            Training participation, interaction, and feedback were encouraged.
+          </div>
+          <div class="rating-group">
+            <div class="rating-options">
+              <label><input type="radio" name="pres3" value="1" required /><span>1</span></label>
+              <label><input type="radio" name="pres3" value="2" /><span>2</span></label>
+              <label><input type="radio" name="pres3" value="3" /><span>3</span></label>
+              <label><input type="radio" name="pres3" value="4" /><span>4</span></label>
+              <label><input type="radio" name="pres3" value="5" /><span>5</span></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="score-display" id="score-pres">
+          <div class="score-item">
+            <div class="score-val" id="pres-avg">—</div>
+            <div class="score-lbl">Total Rating<br>(avg of 3)</div>
+          </div>
+          <div class="score-item">
+            <div class="score-val" id="pres-actual">—</div>
+            <div class="score-lbl">Actual Rating<br>(× 30%)</div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- ── Competency 3: Customer Relation ── -->
+      <div class="competency-block">
+        <div class="competency-name">Customer Relation</div>
+        <div class="competency-weight">Weight: 20% of Total Score</div>
+
+        <div class="particular-row">
+          <div class="particular-text">
+            <span class="particular-num">1.</span>
+            The trainer was able to maintain a demeanor with adequate grace and professionalism.
+          </div>
+          <div class="rating-group">
+            <div class="rating-options">
+              <label><input type="radio" name="cr1" value="1" required /><span>1</span></label>
+              <label><input type="radio" name="cr1" value="2" /><span>2</span></label>
+              <label><input type="radio" name="cr1" value="3" /><span>3</span></label>
+              <label><input type="radio" name="cr1" value="4" /><span>4</span></label>
+              <label><input type="radio" name="cr1" value="5" /><span>5</span></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="particular-row">
+          <div class="particular-text">
+            <span class="particular-num">2.</span>
+            The trainer was able to address concerns with confidence and relay it effectively to the audience at different levels.
+          </div>
+          <div class="rating-group">
+            <div class="rating-options">
+              <label><input type="radio" name="cr2" value="1" required /><span>1</span></label>
+              <label><input type="radio" name="cr2" value="2" /><span>2</span></label>
+              <label><input type="radio" name="cr2" value="3" /><span>3</span></label>
+              <label><input type="radio" name="cr2" value="4" /><span>4</span></label>
+              <label><input type="radio" name="cr2" value="5" /><span>5</span></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="particular-row">
+          <div class="particular-text">
+            <span class="particular-num">3.</span>
+            The trainer invites a positive training environment, promoting pro-activity.
+          </div>
+          <div class="rating-group">
+            <div class="rating-options">
+              <label><input type="radio" name="cr3" value="1" required /><span>1</span></label>
+              <label><input type="radio" name="cr3" value="2" /><span>2</span></label>
+              <label><input type="radio" name="cr3" value="3" /><span>3</span></label>
+              <label><input type="radio" name="cr3" value="4" /><span>4</span></label>
+              <label><input type="radio" name="cr3" value="5" /><span>5</span></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="score-display" id="score-cr">
+          <div class="score-item">
+            <div class="score-val" id="cr-avg">—</div>
+            <div class="score-lbl">Total Rating<br>(avg of 3)</div>
+          </div>
+          <div class="score-item">
+            <div class="score-val" id="cr-actual">—</div>
+            <div class="score-lbl">Actual Rating<br>(× 20%)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ RUNNING TOTAL SCORE ══ -->
+    <div class="total-card" id="total-card">
+      <div>
+        <div class="total-label">Overall Actual Rating</div>
+        <div class="rating-band" id="rating-band">Complete all ratings to see score</div>
+      </div>
+      <div class="total-val" id="total-score">—</div>
+    </div>
+
+    <!-- ══ SECTION 4: QUALITATIVE FEEDBACK ══ -->
+    <div class="card active">
+      <div class="section-title">Qualitative Feedback</div>
+
+      <div class="form-group open-ended">
+        <div class="question-label">
+          1. What aspects of the training could be improved? <span class="req">*</span>
+        </div>
+        <textarea id="q1" placeholder="Share your thoughts on areas for improvement…" required></textarea>
+      </div>
+
+      <div class="form-group open-ended">
+        <div class="question-label">
+          2. Other Comments / Recommendations: <span class="req">*</span>
+        </div>
+        <textarea id="q2" placeholder="Any additional comments or suggestions…" required></textarea>
+      </div>
+    </div>
+
+    <!-- ══ SECTION 5: SIGNATURES ══ -->
+    <div class="card">
+      <div class="section-title">Acknowledgment & Signature</div>
+      <p style="font-size:13px;color:#605e5c;margin-bottom:20px;">
+        By entering your name below, you confirm that the information provided is accurate and complete.
+      </p>
+
+      <div class="sig-grid">
+        <div class="sig-box">
+          <label>Name of Evaluator <span style="color:#c4314b">*</span></label>
+          <div class="sig-line"></div>
+          <input type="text" class="sig-name-input" id="evalName" placeholder="Full name" required />
+          <p class="helper-text">Evaluator / Assessor</p>
+        </div>
+        <div class="sig-box">
+          <label>Name of Employee Being Evaluated <span style="color:#c4314b">*</span></label>
+          <div class="sig-line"></div>
+          <input type="text" class="sig-name-input" id="empNameSig" placeholder="Full name" required />
+          <p class="helper-text">Trainee / Presenter</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ACTIONS ══ -->
+    <div class="btn-row">
+      <button type="button" class="btn-pdf" onclick="savePDF()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+        Save as PDF
+      </button>
+      <button type="submit" class="btn-submit">Submit Evaluation</button>
+    </div>
+
+  </form>
+
+  <!-- ══ SUCCESS SCREEN ══ -->
+  <div id="success-screen">
+    <div class="checkmark">✓</div>
+    <h2>Evaluation Submitted Successfully</h2>
+    <p>Thank you for completing the Internal Mock Training Evaluation Form.<br>Your response has been recorded.</p>
+  </div>
+
+</div><!-- /form-container -->
+
+<script>
+  // ══════════════════════════════════════════════════════
+  //  ⚙️  CONFIGURATION — paste your Web App URL below
+  // ══════════════════════════════════════════════════════
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzdO2IAZ6NJbQig3XIwppGP7KGKViGgOo7dDcu4jD11gYywEYCGFeYHdH_hC-SyDW2KCw/exec';
+  // ══════════════════════════════════════════════════════
+
+  // ── Save as PDF ──
+  function savePDF() {
+    // Set a print-friendly title so the PDF filename is meaningful
+    const origTitle = document.title;
+    const empName = document.getElementById('empName').value.trim();
+    const demoDate = document.getElementById('demoDate').value;
+    if (empName) {
+      document.title = `Mock Demo Evaluation - ${empName}${demoDate ? ' (' + demoDate + ')' : ''}`;
+    } else {
+      document.title = 'Internal Mock Training Evaluation Form';
+    }
+    window.print();
+    document.title = origTitle;
+  }
+
+  // ── Rating names by band ──
+  function getRatingBand(score) {
+    if (score >= 5)    return 'Excellent';
+    if (score >= 4)    return 'Exceeds Expectation';
+    if (score >= 3)    return 'Achieved Expectation';
+    if (score >= 2)    return 'Needs Improvement';
+    return 'Poor';
+  }
+
+  // ── Get selected radio value ──
+  function getRadio(name) {
+    const el = document.querySelector(`input[name="${name}"]:checked`);
+    return el ? parseFloat(el.value) : null;
+  }
+
+  // ── Compute & display running scores ──
+  function updateScores() {
+    // System and Process Flows (weight 50%)
+    const spf = [getRadio('spf1'), getRadio('spf2'), getRadio('spf3')];
+    const spfFilled = spf.filter(v => v !== null);
+    let spfAvg = null, spfActual = null;
+    if (spfFilled.length === 3) {
+      spfAvg   = spf.reduce((a,b) => a + b, 0) / 3;
+      spfActual = spfAvg * 0.50;
+    }
+
+    // Presentation (weight 30%)
+    const pres = [getRadio('pres1'), getRadio('pres2'), getRadio('pres3')];
+    const presFilled = pres.filter(v => v !== null);
+    let presAvg = null, presActual = null;
+    if (presFilled.length === 3) {
+      presAvg   = pres.reduce((a,b) => a + b, 0) / 3;
+      presActual = presAvg * 0.30;
+    }
+
+    // Customer Relation (weight 20%)
+    const cr = [getRadio('cr1'), getRadio('cr2'), getRadio('cr3')];
+    const crFilled = cr.filter(v => v !== null);
+    let crAvg = null, crActual = null;
+    if (crFilled.length === 3) {
+      crAvg   = cr.reduce((a,b) => a + b, 0) / 3;
+      crActual = crAvg * 0.20;
+    }
+
+    // Update SPF display
+    document.getElementById('spf-avg').textContent    = spfAvg    !== null ? spfAvg.toFixed(2)    : '—';
+    document.getElementById('spf-actual').textContent = spfActual !== null ? spfActual.toFixed(2) : '—';
+
+    // Update Presentation display
+    document.getElementById('pres-avg').textContent    = presAvg    !== null ? presAvg.toFixed(2)    : '—';
+    document.getElementById('pres-actual').textContent = presActual !== null ? presActual.toFixed(2) : '—';
+
+    // Update Customer Relation display
+    document.getElementById('cr-avg').textContent    = crAvg    !== null ? crAvg.toFixed(2)    : '—';
+    document.getElementById('cr-actual').textContent = crActual !== null ? crActual.toFixed(2) : '—';
+
+    // Total
+    if (spfActual !== null && presActual !== null && crActual !== null) {
+      const total = spfActual + presActual + crActual;
+      document.getElementById('total-score').textContent = total.toFixed(2);
+      document.getElementById('rating-band').textContent = getRatingBand(total);
+    } else {
+      document.getElementById('total-score').textContent = '—';
+      document.getElementById('rating-band').textContent = 'Complete all ratings to see score';
+    }
+  }
+
+  // Attach listeners to all radio buttons
+  document.querySelectorAll('input[type="radio"]').forEach(r => {
+    r.addEventListener('change', updateScores);
+  });
+
+  // ── Form submission → Google Sheets ──
+  document.getElementById('evalForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // ── Validation: required text fields ──
+    const required = [
+      { id: 'empName',    label: 'Employee Name' },
+      { id: 'position',   label: 'Position' },
+      { id: 'bizUnit',    label: 'Business Unit' },
+      { id: 'product',    label: 'Product' },
+      { id: 'module',     label: 'Module' },
+      { id: 'demoDate',   label: 'Date of Demo' },
+      { id: 'q1',         label: 'Question 1 (Areas for Improvement)' },
+      { id: 'q2',         label: 'Other Comments / Recommendations' },
+      { id: 'evalName',   label: 'Evaluator Name' },
+      { id: 'empNameSig', label: 'Name of Employee Being Evaluated' },
+    ];
+
+    for (const f of required) {
+      const el = document.getElementById(f.id);
+      if (!el.value.trim()) {
+        el.focus();
+        el.style.borderBottomColor = '#c4314b';
+        alert(`Please fill in: ${f.label}`);
+        return;
+      }
+      el.style.borderBottomColor = '';
+    }
+
+    // ── Validation: all 9 ratings must be selected ──
+    const radioGroups = ['spf1','spf2','spf3','pres1','pres2','pres3','cr1','cr2','cr3'];
+    for (const g of radioGroups) {
+      if (!document.querySelector(`input[name="${g}"]:checked`)) {
+        alert('Please provide a rating for all competency particulars.');
+        return;
+      }
+    }
+
+    // ── Check Apps Script URL is configured ──
+    if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === 'YOUR_WEB_APP_URL_HERE') {
+      alert('⚠️ Google Sheets is not connected yet.\n\nOpen this HTML file in a text editor, find APPS_SCRIPT_URL near the top of the <script> section, and replace "https://script.google.com/macros/s/AKfycbzdO2IAZ6NJbQig3XIwppGP7KGKViGgOo7dDcu4jD11gYywEYCGFeYHdH_hC-SyDW2KCw/exec" with your deployed Apps Script Web App URL.\n\nSee the Setup Guide for instructions.');
+      return;
+    }
+
+    // ── Build payload ──
+    const payload = {
+      empName:    document.getElementById('empName').value.trim(),
+      position:   document.getElementById('position').value.trim(),
+      bizUnit:    document.getElementById('bizUnit').value.trim(),
+      product:    document.getElementById('product').value.trim(),
+      module:     document.getElementById('module').value.trim(),
+      demoDate:   document.getElementById('demoDate').value,
+      spf1:       getRadio('spf1'),
+      spf2:       getRadio('spf2'),
+      spf3:       getRadio('spf3'),
+      spfAvg:     parseFloat(document.getElementById('spf-avg').textContent) || 0,
+      spfActual:  parseFloat(document.getElementById('spf-actual').textContent) || 0,
+      pres1:      getRadio('pres1'),
+      pres2:      getRadio('pres2'),
+      pres3:      getRadio('pres3'),
+      presAvg:    parseFloat(document.getElementById('pres-avg').textContent) || 0,
+      presActual: parseFloat(document.getElementById('pres-actual').textContent) || 0,
+      cr1:        getRadio('cr1'),
+      cr2:        getRadio('cr2'),
+      cr3:        getRadio('cr3'),
+      crAvg:      parseFloat(document.getElementById('cr-avg').textContent) || 0,
+      crActual:   parseFloat(document.getElementById('cr-actual').textContent) || 0,
+      totalScore: parseFloat(document.getElementById('total-score').textContent) || 0,
+      ratingBand: document.getElementById('rating-band').textContent,
+      q1:         document.getElementById('q1').value.trim(),
+      q2:         document.getElementById('q2').value.trim(),
+      evalName:   document.getElementById('evalName').value.trim(),
+      empNameSig: document.getElementById('empNameSig').value.trim(),
+    };
+
+    // ── Loading state ──
+    const submitBtn = document.querySelector('.btn-submit');
+    const origText  = submitBtn.textContent;
+    submitBtn.textContent = 'Submitting…';
+    submitBtn.disabled = true;
+    submitBtn.style.opacity = '0.7';
+
+    // ── POST to Apps Script via URLSearchParams (most reliable with Apps Script + no-cors) ──
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      body:   new URLSearchParams({ data: JSON.stringify(payload) }),
+      mode:   'no-cors',
+    })
+    .then(() => {
+      // no-cors means we can't read the response body — treat as success
+      showSuccess(payload.empName);
+    })
+    .catch(err => {
+      submitBtn.textContent = origText;
+      submitBtn.disabled    = false;
+      submitBtn.style.opacity = '1';
+      alert('❌ Submission failed. Please check your internet connection and try again.\n\n' + err.message);
+    });
+  });
+
+  // ── Show success screen ──
+  function showSuccess(name) {
+    const wrap = document.getElementById('form-wrap');
+    wrap.innerHTML = `
+      <div id="success-screen" style="display:block;text-align:center;padding:60px 24px;">
+        <div style="width:70px;height:70px;background:#107c10;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:32px;color:#fff;">✓</div>
+        <h2 style="font-size:22px;color:#201f1e;margin-bottom:10px;">Evaluation Submitted!</h2>
+        <p style="color:#605e5c;font-size:14px;margin-bottom:6px;">
+          ${name ? `<strong>${name}'s</strong> evaluation has been recorded.` : 'Your evaluation has been recorded.'}
+        </p>
+        <p style="color:#605e5c;font-size:13px;">The scores have been saved to the Google Sheet automatically.</p>
+      </div>`;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
